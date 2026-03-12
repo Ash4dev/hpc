@@ -1,0 +1,49 @@
+Abstractions help us in reducing all this complexity down to a single interface that describes what a certain module can do without fixing a concrete implementation
+
+An abstraction of a CPU is called an instruction set architecture (ISA)
+An ISA essentially defines how the hardware should interpret the machine language
+ISA also decides the number, nature of registers, memory model, I/O model
+
+Developing and maintaining a completely separate ISA is costly. Boil down to:
+1) Arm: ARM -> RISC (Reduced Instruction Set Computers): few optimized pipelinable
+2) x86: Intel + AMD -> CISC (Complex Instruction Set Computers): many specialized generalized
+
+The main advantage of RISC designs is that they result in simpler and smaller chips, which projects to lower manufacturing costs and power usage
+
+# ISA Comparisons
+
+Inside x86-64 instructions are transformed:
+1) Instruction Fetch from variable-length byte stream.
+2) Instruction Decode: highly complex logic identifies prefixes, opcode bytes, ModR/M
+fields.
+3) Micro-Op Translation: CISC instructions → multiple RISC-like micro-ops.
+4) Register Renaming: architectural registers (RAX, RBX. . . ) mapped to physical
+registers.
+5) Out-of-Order Execution: micro-ops scheduled dynamically, exploiting instruction-
+level parallelism.
+
+ARMv8 (Aarch64)
+1) All instructions are 32 bits in size
+2) Load/store architecture: ALU ops only on registers
+3) Large, orthogonal register file (31 GPRs)
+4) Consistent addressing modes and instruction patternsk
+
+RISC-V represents a new era: a fully open ISA that anyone can implement without licensing
+fees.
+1) Cleanest RISC instruction format among modern ISAs
+2) Mandatory minimal base ISA (RV64I)
+3) Modular extensions: M (mul/div), A (atomics), F/D (floating point), V (vector)
+4) Ideal for research, education, and custom silicon designs
+
+# Addressing Mode
+x86 has the richest set of addressing modes:
+• Base Register
+• Base + Offset
+• Base + Index * Scale
+• Base + Index * Scale + Offset
+ARMv8 and RISC-V are very simple in comparison
+
+• x86-64: Maximum performance, high complexity, massive legacy.
+• ARMv8: Efficient, modern RISC for mobile and server.
+• RISC-V: Open, modular, future-focused clean RISC.
+

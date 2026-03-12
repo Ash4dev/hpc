@@ -1,0 +1,30 @@
+Assembly doesn’t have if / for / functions etc. Only has goto statement
+
+Jump moves the instruction pointer to a location specified by its operand
+Address can be absolute / relative to current address / any computed valid address
+
+label:
+  ...
+  ...
+
+Unconditional jump jmp can only be used to implement while (true) kind of loops. No boolean
+Conditional operations use a special FLAGS register (filled with check before jump)
+
+# (1 useful instruction / 4 total)
+loop:                             ; label
+    add  edx, DWORD PTR [rax]     ; de-reference rax as 32b int & add result to edx
+    add  rax, 4                   ; iterate with 4 bytes
+    cmp  rax, rcx                 ; iterator != end pointer
+    jne  loop                     ; jump if not equal
+
+# Loop Unrolling (3 useful instructions / 7 total)
+loop:
+    add  edx, [rax]
+    add  edx, [rax+4]
+    add  edx, [rax+8]
+    add  edx, [rax+12]
+    add  rax, 16
+    cmp  rax, rsi
+    jne  loop
+
+Unrolling is beneficial upto a certain degree

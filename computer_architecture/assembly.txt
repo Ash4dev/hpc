@@ -1,0 +1,47 @@
+In modern computing, an assembler is often part of a larger ecosystem involving:
+• build systems (Make, Ninja, CMake),
+• compilers (GCC, Clang/LLVM, MSVC),
+• linkers (ld, gold, lld),
+• debuggers (GDB, LLDB),
+• binary utilities (objdump, readelf, nm).
+
+CPUs are controlled with machine language, which is just a stream of binary-encoded instructions: instruction number (opcode), operands, result address
+
+There is almost 1:1 correspondence between machine code and assembly
+
+Assembly is ISA-dependent. x86 is de-facto choice for HPC.
+x86-64 remains the architecture with the richest and most diverse assembler ecosystem.
+
+# Common x86 instructions
+mov: move word from (NOT to) / inc: increment by 1 / mul: multiply / idiv: integer division
+[reg]: de-reference pointer in register / DWORD: 32 bit size information / ; : comment symbol
+
+# Registers
+General Purpose Registers: rax, rbx, rcx, rdx, rdi, rsi, rbp, rsp, and r8-r15 (16 in total)
+(rax 64 → eax 32 → ax 16 → al 8) : the lowest 32 bits of rax are eax & so-on
+Variety of registers exist: floating, vector, ...
+
+Instructions are overloaded & behavior depends on the operands
+
+# Move
+mov doesn’t move a value into a register, but copies it, preserving the original
+when copying data between two registers, mov instruction renames registers internally
+
+Addressing Modes
+Memory addressing with [] operator: SIZE PTR [base + index * scale + displacement]
+[] calculates the address and then dereferences the value stored at the address
+displacement: integer, scale: 2/4/8, BYTE: 8b / WORD: 16b / DWORD: 32b / QWORD: 64b
+
+the lea (“load effective address”) instruction calculates the memory address of the operand and stores it in a register in one cycle, without doing any actual memory operations
+
+The AT&T syntax, used by default by all Linux tools. (GAS: Gnu Assembler)
+The Intel syntax, used by default, well, by Intel. (NASM: Netwide Assembler)
+
+# AT&T assembly general facts
+1) The last operand is used to specify the destination.
+2) Registers and constants need to be prefixed by % and $ respectively (e.g., addl $1, %rdx increments rdx).
+3) Memory addressing looks like this: displacement(%base, %index, scale).
+4) Both ; and # can be used for line comments, and also /* */ can be used for block comments.
+5) the instruction names need to be “suffixed” (addq, movl, cmpq, etc.) to specify what size operands are being manipulated:
+
+NASM is widely regarded as the cleanest and most readable assembler for x86. Guide too.
