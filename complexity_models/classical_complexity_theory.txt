@@ -1,0 +1,75 @@
+The “elementary operations” of a CPU: instructions, their “costs”: latencies.
+
+Instructions are stored in memory and executed one by one by the processor.
+
+Running time = sum (latencies) / clock frequency (number of instructions executed per second).
+
+Clock frequency is difficult to predict, depends on a lot of instantaneous factors. Instruction latencies are consistent mostly.
+
+Key-idea: represent complexity as function of input size. Time -> #Cycles -> #Ops -> Approx
+Being approximately correct however, is not sufficient.
+
+Modern Hardware
+
+Old Approach: Lots (~1M) of components (Lego blocks mm to cm) connected with wire (lock)
+- many parts / bigger circuits / wiring overhead / longer distance / slower / more power 
+
+New Approach: Make the whole thing smaller (all on a single chip)
+- Benefits: less material / closer / less wire / fast / less heat / more fit
+
+Method: Photolithography
+1) Grow a very pure silicon crystal
+2) Slice it into thin wafers
+3) Coat wafer with a light-sensitive chemical
+4) Shine light through a pattern mask
+5) Light exposes parts of the chemical
+6) Chemicals remove exposed regions
+7) Materials are deposited in those patterns
+
+Dennard scaling: if size reduced to 70%, 
+1) req area/chip = (0.7^2)x -> for same area: 2x -> Moore's law
+2) clock speed: inversely to chip size: 1/0.7 x
+3) goal: keep electric field constant
+  - V = E*d, P = I*V, V = I*R
+  - if d reduced by factor s, so is V to keep E constant
+  - Single chip analysis:
+  - (New Power / Chip) = (Original Power / Chip) / s^2
+  - Total power: New Power / Chip * Number of Transistor
+  - Original Power / Chip / s^2 * s^2 = Original Power
+  - If power stays constant, area decreases
+    - manf cost decreases, but clock speed 1.4x, density 2x
+
+Thermodynamically, a computer is just a very efficient device for converting electrical power into heat. Generated heat must be removed
+
+1) More transistors + higher speed → too much heat.
+2) Electrons start leaking into nearby circuits.
+
+NOTE: Most CPUs since then remain around 3–5 GHz. Chip sizes are mostly fixed now.
+Return back to lego approach.
+
+But modern hardware performance depends heavily on:
+1) cache usage
+2) memory access
+3) vectorization
+4) parallelism
+5) branch prediction
+
+So two algorithms with the same complexity can differ by 100× performance
+Focus: Miniaturization to Parallelism
+
+CP mindset: 2-3GHz with 3-5 ops / useful "average" op -> 5*1e8
+
+On the lowest level, computers execute machine code consisting of binary-encoded instructions which are used to control the CPU. 
+
+From a programmer’s perspective, there are two types of languages: compiled, which pre-process before executing, and interpreted, which are executed during runtime using a separate program called an interpreter.
+
+From a computer’s perspective, there are also two types of languages: native, which directly execute machine code, and managed, which rely on some sort of runtime to do it.
+
+Since running machine code in an interpreter doesn’t make sense, this makes a total of three types of languages:
+
+1) Interpreted languages, such as Python, JavaScript, or Ruby.
+2) Compiled languages with a runtime, such as Java, C#, or Erlang (and languages that work on their VMs, such as Scala, F#, or Elixir).
+3) Compiled native languages, such as C, Go, or Rust.
+
+Comparing languages in terms of performance doesn’t make much sense: programming languages are fundamentally just tools that take away some control over performance in exchange for convenient abstractions
+
