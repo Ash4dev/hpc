@@ -1,0 +1,85 @@
+# Registers 101
+Register is a tiny, extremely fast, and volatile storage unit located directly inside CPU
+Registers single clock cycle data access. AKA Storage Element / Internal CPU Storage
+Physical registers are a *global resource shared* by all parts of a program.
+Each thread has its own private stack and CPU registers (virtualised)
+
+All mathematical operations are performed inside registers
+
+Common Registers: 
+accumulator: immediate arithmetic / logic results
+program counter: address of next instruction to be executed
+instruction pointer: address of current instruction being executed
+flags: individual bits that act as status codes
+
+stack pointer: tracks top of the stack
+base pointer: reference point for current function's stack frame
+
+# Internal Memory layout
+
+ffffffff  kernel space
+          ...
+          ...
+          ...
+          stack
+grows     ...
+down      ...
+          ...
+guard page---
+          ...
+          ...
+up        ...
+grows     ...
+          heap
+          ...
+          data (bss / .data: init)
+          ...
+00000000  code
+
+# basic C code
+
+int result = 0;
+int add(int a, int b) { int sum = a + b; return sum; }
+int main() { result = add(3, 4); return 0; }
+
+# stack mockup: https://www.youtube.com/watch?v=u_-oQx_4jvo
+ffffffff: MAX
+
+rbp = MAX / rsp = MAX
+
+main:
+  mov edi, 3        ; bf | 03 00 00 00
+  mov esi, 4
+  call add          ; jump
+  mov [0x1234], eax ; dest, src
+
+add:
+rbp = MAX / rsp = MAX-8 ; NO STACK ALLOCATIONS IN MAIN (CALL ADDRESS)
+  ;;;;; SET UP
+  push rbp          ; save caller frame
+rbp = MAX / rsp = MAX-16
+
+  mov rbp, rsp      ; rbp overwritten for add
+rbp = MAX-16 / rsp = MAX-16
+
+  sub rsp, 4        ; allocate 4 bytes for sum
+rbp = MAX-16 / rsp = MAX-20 
+
+  ;;;;; CALC
+  mov eax, edi
+  add eax, esi
+
+  ;;;;; BOOK KEEP
+                    ; rbp is used for reference always
+  mov [rbp-4], eax  ; result stored in 4 bytes
+  mov eax, [rbp-4]  ; move value from stack to register
+
+  ;;;;; TEAR DOWN
+  add rsp, 4
+rbp = MAX-16 / rsp = MAX-16
+
+  pop rbp
+rbp = MAX (overwritten w caller) / rsp = MAX-8
+
+  ret               ; jump back to the caller
+rbp = MAX / rsp = MAX 
