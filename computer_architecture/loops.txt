@@ -10,14 +10,16 @@ label:
 Unconditional jump jmp can only be used to implement while (true) kind of loops. No boolean
 Conditional operations use a special FLAGS register (filled with check before jump)
 
-# (1 useful instruction / 4 total)
+# Vanilla loop (1 useful instruction / 4 total) -> 32 total instructions
 loop:                             ; label
     add  edx, DWORD PTR [rax]     ; de-reference rax as 32b int & add result to edx
     add  rax, 4                   ; iterate with 4 bytes
     cmp  rax, rcx                 ; iterator != end pointer
     jne  loop                     ; jump if not equal
 
-# Loop Unrolling (3 useful instructions / 7 total)
+3 control instructions per 1 work instruction
+
+# Loop Unrolling (4 useful instructions / 7 total) -> 14 total instructions
 loop:
     add  edx, [rax]
     add  edx, [rax+4]
@@ -27,4 +29,17 @@ loop:
     cmp  rax, rsi
     jne  loop
 
-Unrolling is beneficial upto a certain degree
+3 control instructions per 4 work instructions
+
+Expected benefit: 4x for same number of control instructions. (if sequential execution)
+Instructions are queued (fancily). Instructions are not executed sequentially.
+Increment & complete check are independent. Independent pending operations happen at once.
+
+Hence, unrolling is beneficial to a lesser degree than expected. 
+
+# Optimization (1 useful instruction / 3 total instructions) -> 24 total
+    mov  rax, -40                         ; replace 100 with the array size
+loop:
+    add  edx, DWORD PTR [rax + 100 + rcx] ; rcx: base ptr
+    add  rax, 4                           ; rax: if zero, sets FLAG
+    jnz  loop                             ; checks if the result is zero
